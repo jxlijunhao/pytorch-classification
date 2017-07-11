@@ -42,7 +42,7 @@ Single-crop (224x224) validation error rate is reported.
 | ResNet18                    | 11.69              |  30.09             | 10.78              |
 | ResNeXt50-32x4d             | 25.03              |  22.6              | 6.29               |
 | ResNet18 (bupt-priv)        | 11.69              |  29.11             | 10.07              |
-| ResNeXt26-32x4d (bupt-priv) | 15.39              |  --                | --                 |
+| ResNeXt26-32x4d (bupt-priv) | 15.39              |  24.93             | 7.75               |
 | Aligned-Inception-ResNet101 (bupt-priv) | --              |  --                | --                 |
 | Aligned-Inception-ResNeXt50 (bupt-priv) | --              |  --                | --                 |
 
