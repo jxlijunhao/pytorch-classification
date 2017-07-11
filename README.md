@@ -49,7 +49,7 @@ Single-crop (224x224) validation error rate is reported.
 - All the bupt-priv models are trained for 130/140 epochs, the lr schedule is 61 91 121.
 
 
-![resnet18 and resnext26_32x4d curve](utils/images/resnet18_resnext26_32x4d.png)
+![resnet18 curve](utils/images/resnet18-log.png) ![resnext26_32x4d curve](utils/images/resnext26_32x4d-log.png)
 
 ## Supported Architectures
 
