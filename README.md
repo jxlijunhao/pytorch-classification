@@ -44,8 +44,7 @@ Single-crop (224x224) validation error rate is reported.
 | ResNet18 (bupt-priv)        | 11.69              |  29.07             | --                 |
 | ResNeXt26-32x4d (bupt-priv) | --                 |  --                | --                 |
 
-![ResNet18 (bupt-priv) curve](utils/images/resnet18-log.png)
-![ResNeXt26-32x4d (bupt-priv) curve](utils/images/resnext26_32x4d-log.png)
+![resnet18 and resnext26_32x4d curve](utils/images/resnet18_resnext26_32x4d.png)
 
 ## Supported Architectures
 
