@@ -8,6 +8,9 @@ Classification on CIFAR-10/100 and ImageNet with PyTorch.
 * Training progress bar with rich info
 * Training log and training curve visualization code (see `./utils/logger.py`)
 
+* Add Aligned Inception Resnet/ResNeXt (by soeaver)
+* Add ResNeXt26-32x4d (by soeaver)
+
 ## Install
 * Install [PyTorch](http://pytorch.org/)
 * Clone recursively
