@@ -7,15 +7,14 @@ Classification on CIFAR-10/100 and ImageNet with PyTorch.
 * Multi-GPU support
 * Training progress bar with rich info
 * Training log and training curve visualization code (see `./utils/logger.py`)
-
-* Add Aligned Inception Resnet/ResNeXt (by soeaver)
-* Add ResNeXt26-32x4d (by soeaver)
+* **Add Aligned Inception Resnet/ResNeXt (by soeaver)**
+* **Add ResNeXt26-32x4d (by soeaver)**
 
 ## Install
 * Install [PyTorch](http://pytorch.org/)
 * Clone recursively
   ```
-  git clone --recursive https://github.com/bearpaw/pytorch-classification.git
+  git clone --recursive https://github.com/soeaver/pytorch-classification
   ```
 
 ## Training
