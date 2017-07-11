@@ -116,3 +116,9 @@ python imagenet.py -a resnet18 --data ~/dataset/ILSVRC2012/ --epochs 90 --schedu
 ```
 python imagenet.py -a resnext50 --base-width 4 --cardinality 32 --data ~/Database/ILSVRC2017/Data/CLS-LOC/ --epochs 140 --schedule 61 91 121 --gamma 0.1 -c checkpoints/imagenet/resnext50-32x4d --workers 8
 ```
+
+### Resume training ResNeXt-50 (32x4d) (bupt-priv version)
+```
+python imagenet.py -a resnext50 --base-width 4 --cardinality 32 --data ~/Database/ILSVRC2017/Data/CLS-LOC/ --epochs 140 --lr 0.1 --start-epoch 8 --schedule 61 91 121 --gamma 0.1 -c checkpoints/imagenet/resnext50-32x4d --resume checkpoints/imagenet/resnext50-32x4d/checkpoint.pth.tar --workers 8
+```
+
