@@ -44,7 +44,7 @@ Single-crop (224x224) validation error rate is reported.
 | ResNet18 (bupt-priv)        | 11.69              |  29.11             | 10.07              |
 | ResNeXt26-32x4d (bupt-priv) | 15.39              |  24.93             | 7.75               |
 | Aligned-Inception-ResNet101 (bupt-priv) | --              |  --                | --                 |
-| Aligned-Inception-ResNeXt50 (bupt-priv) | --              |  --                | --                 |
+| Aligned-Inception-ResNeXt50 (bupt-priv) | 28.09           |  --                | --                 |
 
 - All the bupt-priv models are trained for 130/140 epochs, the lr schedule is 61 91 121.
 
