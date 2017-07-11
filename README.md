@@ -49,8 +49,8 @@ Single-crop (224x224) validation error rate is reported.
 - All the bupt-priv models are trained for 130/140 epochs, the lr schedule is 61 91 121.
 
 <div align='center'>
-  <img src='utils/images/resnet18-log.png' height='350px'>
-  <img src='utils/images/resnext26_32x4d-log.png' height='350px'>
+  <img src='utils/images/resnet18-log.png' height='340px'>
+  <img src='utils/images/resnext26_32x4d-log.png' height='340px'>
 </div> 
 
 ## Supported Architectures
