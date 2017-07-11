@@ -12,7 +12,7 @@ import torch.nn.functional as F
 from torch.nn import init
 import torch
 
-__all__ = ['resnext50', 'resnext101', 'resnext152']
+__all__ = ['resnext26', 'resnext50', 'resnext101', 'resnext152']
 
 class Bottleneck(nn.Module):
     """
@@ -147,6 +147,14 @@ class ResNeXt(nn.Module):
         x = self.fc(x)
 
         return x
+    
+    
+def resnext26(baseWidth=4, cardinality=32):
+    """
+    Construct ResNeXt-26. 
+    """
+    model = ResNeXt(baseWidth, cardinality, [2, 2, 2, 2], 1000)
+    return model
 
 
 def resnext50(baseWidth, cardinality):
