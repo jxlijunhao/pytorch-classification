@@ -3,7 +3,7 @@ from __future__ import division
 Ported form 
 https://github.com/facebook/fb.resnet.torch
 and
-https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py
+https://arxiv.org/pdf/1703.06211.pdf
 (c) Yang Lu
 """
 import math
@@ -12,7 +12,7 @@ import torch.nn.functional as F
 from torch.nn import init
 import torch
 
-__all__ = ['align_inception_resnet50', 'align_inception_resnet101']
+__all__ = ['aligned_inception_resnet50', 'aligned_inception_resnet101']
 
 class Inception_Bottleneck(nn.Module):
     """
@@ -79,14 +79,14 @@ class Inception_Bottleneck(nn.Module):
         return out
 
 
-class Align_Inception_ResNet(nn.Module):
+class Aligned_Inception_ResNet(nn.Module):
     def __init__(self, layers, num_classes):
         """ Constructor
         Args:
             layers: config of layers, e.g., [3, 4, 6, 3]
             num_classes: number of classes
         """
-        super(Align_Inception_ResNet, self).__init__()
+        super(Aligned_Inception_ResNet, self).__init__()
         block = Inception_Bottleneck
 
         self.num_classes = num_classes
@@ -153,18 +153,18 @@ class Align_Inception_ResNet(nn.Module):
         return x
 
 
-def align_inception_resnet50():
+def aligned_inception_resnet50():
     """
-    Construct Align_Inception_ResNet-50.
+    Construct Aligned_Inception_ResNet-50.
     """
-    model = Align_Inception_ResNet([3, 4, 6, 3], 1000)
+    model = Aligned_Inception_ResNet([3, 4, 6, 3], 1000)
     return model
 
 
-def align_inception_resnet101():
+def aligned_inception_resnet101():
     """
-    Construct Align_Inception_ResNet-101.
+    Construct Aligned_Inception_ResNet-101.
     """
-    model = Align_Inception_ResNet([3, 4, 23, 3], 1000)
+    model = Aligned_Inception_ResNet([3, 4, 23, 3], 1000)
     return model
 
