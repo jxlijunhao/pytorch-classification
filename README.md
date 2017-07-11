@@ -51,6 +51,11 @@ Single-crop (224x224) validation error rate is reported.
 <div align='center'>
   <img src='utils/images/resnet18-log.png' height='330px'>
   <img src='utils/images/resnext26_32x4d-log.png' height='330px'>
+  aligned_inception_resnet101-log.png
+</div> 
+
+<div align='center'>
+  <img src='utils/images/aligned_inception_resnet101-log.png' height='330px'>
 </div> 
 
 ## Supported Architectures
