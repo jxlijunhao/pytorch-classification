@@ -1,5 +1,6 @@
 # pytorch-classification
 Classification on CIFAR-10/100 and ImageNet with PyTorch.
+Bupt-priv version.
 
 ## Features
 * Unified interface for different network architectures
