@@ -38,14 +38,14 @@ Top1 error rate on the CIFAR-10/100 benchmarks can be found in official [pytorch
 Single-crop (224x224) validation error rate is reported. 
 
 | Model                       | Params (M)         |  Top-1 Error (%)   | Top-5 Error  (%)   |
-| --------------------------- | ------------------ | ------------------ | ------------------ |
+:---:|:---:|:---:|:---:
 | ResNet18                    | 11.69              |  30.09             | 10.78              |
 | ResNeXt50-32x4d             | 25.03              |  22.6              | 6.29               |
 | ResNet18 (bupt-priv)        | 11.69              |  29.11             | 10.07              |
 | ResNeXt26-32x4d (bupt-priv) | 15.39              |  24.93             | 7.75               |
 | Aligned-Inception-ResNet101<br/>(bupt-priv) | 64.38           |  20.74             | 5.56               |
 | Aligned-Inception-ResNeXt50-24x4d<br/>(bupt-priv) | 28.09           |  21.88                | 5.95                 |
-| Aligned-Inception-ResNeXt101<br/>bupt-priv) | 64.17           |  --                | --                 |
+| Aligned-Inception-ResNeXt101<br/>(bupt-priv) | 64.17           |  --                | --                 |
 
 - All the bupt-priv models are trained for 130/140 epochs, the lr schedule is 61 91 121.
 
