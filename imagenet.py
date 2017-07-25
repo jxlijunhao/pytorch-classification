@@ -20,6 +20,7 @@ import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 import torchvision.models as models
 import models.imagenet as customized_models
+import numpy as np
 
 from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
 
@@ -86,6 +87,8 @@ parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true',
                     help='evaluate model on validation set')
 parser.add_argument('--pretrained', dest='pretrained', action='store_true',
                     help='use pre-trained model')
+parser.add_argument('-cos', '--cosine_lr', dest='cosine_lr', action='store_false',
+                    help='using cosine learning rate')
 
 args = parser.parse_args()
 state = {k: v for k, v in args._get_kwargs()}
@@ -188,7 +191,10 @@ def main():
 
     # Train and val
     for epoch in range(start_epoch, args.epochs):
-        adjust_learning_rate(optimizer, epoch)
+        if args.cosine_lr:
+            adjust_cosine_lr(optimizer, epoch)
+        else:
+            adjust_learning_rate(optimizer, epoch)
 
         print('\nEpoch: [%d | %d] LR: %f' % (epoch + 1, args.epochs, state['lr']))
 
@@ -335,6 +341,12 @@ def adjust_learning_rate(optimizer, epoch):
         state['lr'] *= args.gamma
         for param_group in optimizer.param_groups:
             param_group['lr'] = state['lr']
+            
+def adjust_cosine_lr(optimizer, epoch):
+    global state
+    state['lr'] = 0.5 * args.lr * (np.cos(epoch * np.pi / args.epochs) + 1.0)
+    for param_group in optimizer.param_groups:
+        param_group['lr'] = state['lr']
 
 if __name__ == '__main__':
     main()
