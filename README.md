@@ -45,7 +45,7 @@ Single-crop (224x224) validation error rate is reported.
 | ResNeXt26-32x4d (bupt-priv) | 15.39              |  24.93             | 7.75               |
 | Aligned-Inception-ResNet101<br/> (bupt-priv) | 64.38           |  20.74             | 5.56               |
 | Aligned-Inception-ResNeXt50-24x4d<br/> (bupt-priv) | 28.09           |  21.88                | 5.95                 |
-| Aligned-Inception-ResNeXt101-32x4d<br/> (bupt-priv) | 64.17           |  --                | --                 |
+| Aligned-Inception-ResNeXt101-32x4d<br/> (bupt-priv) | 64.17           |  20.63                | --                 |
 
 - All the bupt-priv models are trained for 130/140 epochs, the lr schedule is 61 91 121.
 
@@ -57,6 +57,10 @@ Single-crop (224x224) validation error rate is reported.
 <div align='center'>
   <img src='utils/images/aligned_inception_resnet101-log.png' height='330px'>
   <img src='utils/images/aligned_inception_resnext50_24x4d-log.png' height='330px'>
+</div> 
+
+<div align='center'>
+  <img src='utils/images/aligned_inception_resnext101_32x4d-log.png' height='330px'>
 </div> 
 
 ## Supported Architectures
