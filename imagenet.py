@@ -87,7 +87,7 @@ parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true',
                     help='evaluate model on validation set')
 parser.add_argument('--pretrained', dest='pretrained', action='store_true',
                     help='use pre-trained model')
-parser.add_argument('-cos', '--cosine_lr', dest='cosine_lr', action='store_false',
+parser.add_argument('-cos', '--cosine_lr', dest='cosine_lr', action='store_true',
                     help='using cosine learning rate')
 
 args = parser.parse_args()
