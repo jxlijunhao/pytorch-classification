@@ -90,10 +90,15 @@ parser.add_argument('--pretrained', dest='pretrained', action='store_true',
 parser.add_argument('-cos', '--cosine_lr', dest='cosine_lr', action='store_true',
                     help='using cosine learning rate')
 
+# Device options
+parser.add_argument('--gpu_id', default='0,1,2,3', type=str,
+                    help='id(s) for CUDA_VISIBLE_DEVICES')
+
 args = parser.parse_args()
 state = {k: v for k, v in args._get_kwargs()}
 
 # Use CUDA
+os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu_id
 use_cuda = torch.cuda.is_available()
 
 # Random seed
@@ -262,7 +267,10 @@ def train(train_loader, model, criterion, optimizer, epoch, use_cuda):
         end = time.time()
 
         # plot progress
-        bar.suffix  = '({batch}/{size}) Data: {data:.3f}s | Batch: {bt:.3f}s | Total: {total:} | ETA: {eta:} | Loss: {loss:.4f} | top1: {top1: .4f} | top5: {top5: .4f}'.format(
+        bar.suffix  = '({epoch}/{epochs}) Best-top1-err: {error:.3f} | {batch}/{size}) Data: {data:.3f}s | Batch: {bt:.3f}s | Total: {total:} | ETA: {eta:} | Loss: {loss:.4f} | top1: {top1: .4f} | top5: {top5: .4f}'.format(
+                    epoch=epoch + 1,
+                    epochs=args.epochs,
+                    error=100 - best_acc,        
                     batch=batch_idx + 1,
                     size=len(train_loader),
                     data=data_time.val,
