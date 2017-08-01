@@ -13,6 +13,22 @@ import math
 
 __all__ = ['resnet']
 
+class ChannelPool(nn.Module):
+    def __init__(self, kernel_size, stride, dilation=1, padding=0, pool_type='Max'):
+        super(ChannelPool, self).__init__()
+        if pool_type == 'Max':
+            self.pool3d = nn.MaxPool3d((kernel_size,1,1),stride =(stride,1,1),padding = (padding,0,0),dilation = (dilation,1,1))
+        elif pool_type == 'Avg':
+            self.pool3d = AvgPool3d((stride,1,1),stride = (stride,1,1))
+    def forward(self,x):
+        n,c,h,w = x.size()
+        x = x.view(n,1,c,h,w)
+        y = self.pool3d(x)
+        n,c,d,h,w = y.size()
+        y = y.view(n,d,h,w)
+        return y
+
+
 def conv3x3(in_planes, out_planes, stride=1):
     "3x3 convolution with padding"
     return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
@@ -54,9 +70,16 @@ class BasicBlock(nn.Module):
 class Bottleneck(nn.Module):
     expansion = 4
 
-    def __init__(self, inplanes, planes, stride=1, downsample=None):
+    def __init__(self, inplanes, planes, stride=1, downsample=None, use_channel_pool=False):
         super(Bottleneck, self).__init__()
-        self.conv1 = nn.Conv2d(inplanes, planes, kernel_size=1, bias=False)
+        self.use_channel_pool = use_channel_pool
+        if self.use_channel_pool:  # stride=4, kernel=6, pad=1
+            pool_stride = inplanes / planes
+            pool_kernel = pool_stride + 2
+            pool_padding = 1
+            self.cp = ChannelPool(pool_kernel, stride=pool_stride, padding=pool_padding, pool_type='Max') 
+        else:
+            self.conv1 = nn.Conv2d(inplanes, planes, kernel_size=1, bias=False)
         self.bn1 = nn.BatchNorm2d(planes)
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride,
                                padding=1, bias=False)
@@ -70,7 +93,10 @@ class Bottleneck(nn.Module):
     def forward(self, x):
         residual = x
 
-        out = self.conv1(x)
+        if self.use_channel_pool:
+            out = self.cp(x)
+        else:
+            out = self.conv1(x)
         out = self.bn1(out)
         out = self.relu(out)
 
