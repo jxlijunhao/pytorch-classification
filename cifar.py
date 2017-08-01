@@ -72,6 +72,12 @@ parser.add_argument('--compressionRate', type=int, default=2, help='Compression 
 parser.add_argument('--manualSeed', type=int, help='manual seed')
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true',
                     help='evaluate model on validation set')
+parser.add_argument('-cos', '--cosine_lr', dest='cosine_lr', action='store_true',
+                    help='using cosine learning rate')
+
+# Device options
+parser.add_argument('--gpu_id', default='0,1,2,3', type=str,
+                    help='id(s) for CUDA_VISIBLE_DEVICES')
 
 args = parser.parse_args()
 state = {k: v for k, v in args._get_kwargs()}
@@ -80,6 +86,7 @@ state = {k: v for k, v in args._get_kwargs()}
 assert args.dataset == 'cifar10' or args.dataset == 'cifar100', 'Dataset can only be cifar10 or cifar100.'
 
 # Use CUDA
+os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu_id
 use_cuda = torch.cuda.is_available()
 
 # Random seed
@@ -194,7 +201,10 @@ def main():
 
     # Train and val
     for epoch in range(start_epoch, args.epochs):
-        adjust_learning_rate(optimizer, epoch)
+        if args.cosine_lr:
+            adjust_cosine_lr(optimizer, epoch)
+        else:
+            adjust_learning_rate(optimizer, epoch)
 
         print('\nEpoch: [%d | %d] LR: %f' % (epoch + 1, args.epochs, state['lr']))
 
@@ -344,6 +354,12 @@ def adjust_learning_rate(optimizer, epoch):
         state['lr'] *= args.gamma
         for param_group in optimizer.param_groups:
             param_group['lr'] = state['lr']
+            
+def adjust_cosine_lr(optimizer, epoch):
+    global state
+    state['lr'] = 0.5 * args.lr * (np.cos(epoch * np.pi / args.epochs) + 1.0)
+    for param_group in optimizer.param_groups:
+        param_group['lr'] = state['lr']
 
 if __name__ == '__main__':
     main()
