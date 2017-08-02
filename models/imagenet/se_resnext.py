@@ -42,8 +42,8 @@ class SEBottleneck(nn.Module):
         self.bn3 = nn.BatchNorm2d(planes * 4)
 
         self.global_avg = nn.AvgPool2d(ave_kernel)
-        self.fc1 = nn.Linear(planes * 4, planes / 4)
-        self.fc2 = nn.Linear(planes / 4, planes * 4)
+        self.fc1 = nn.Linear(planes * 4, int(planes / 4))
+        self.fc2 = nn.Linear(int(planes / 4), planes * 4)
 
         self.sigmoid = nn.Sigmoid()
         self.relu = nn.ReLU(inplace=True)
@@ -171,7 +171,7 @@ def se_resnext26(baseWidth=4, cardinality=32):
     return model
 
 
-def se_resnext50(baseWidth, cardinality):
+def se_resnext50(baseWidth=4, cardinality=32):
     """
     Construct SE-ResNeXt-50.
     """
@@ -179,7 +179,7 @@ def se_resnext50(baseWidth, cardinality):
     return model
 
 
-def se_resnext101(baseWidth, cardinality):
+def se_resnext101(baseWidth=4, cardinality=32):
     """
     Construct SE-ResNeXt-101.
     """
@@ -187,7 +187,7 @@ def se_resnext101(baseWidth, cardinality):
     return model
 
 
-def se_resnext152(baseWidth, cardinality):
+def se_resnext152(baseWidth=4, cardinality=32):
     """
     Construct SE-ResNeXt-152.
     """
