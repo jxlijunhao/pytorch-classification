@@ -56,7 +56,7 @@ class Bottleneck(nn.Module):
             pool_padding = 1
             self.cp = ChannelPool(pool_kernel, stride=pool_stride, padding=pool_padding, pool_type='Max') 
         else:
-            self.conv1 = nn.Conv2d(inplanes, D*C, kernel_size=1, stride=1, padding=0, bias=False)、
+            self.conv1 = nn.Conv2d(inplanes, D*C, kernel_size=1, stride=1, padding=0, bias=False)
         self.bn1 = nn.BatchNorm2d(D*C)
         self.conv2 = nn.Conv2d(D*C, D*C, kernel_size=3, stride=stride, padding=1, groups=C, bias=False)
         self.bn2 = nn.BatchNorm2d(D*C)
