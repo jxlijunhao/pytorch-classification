@@ -14,13 +14,28 @@ import torch
 
 __all__ = ['resnext26', 'resnext50', 'resnext101', 'resnext152']
 
+class ChannelPool(nn.Module):
+    def __init__(self, kernel_size, stride, dilation=1, padding=0, pool_type='Max'):
+        super(ChannelPool, self).__init__()
+        if pool_type == 'Max':
+            self.pool3d = nn.MaxPool3d((kernel_size,1,1),stride =(stride,1,1),padding = (padding,0,0),dilation = (dilation,1,1))
+        elif pool_type == 'Avg':
+            self.pool3d = AvgPool3d((stride,1,1),stride = (stride,1,1))
+    def forward(self,x):
+        n,c,h,w = x.size()
+        x = x.view(n,1,c,h,w)
+        y = self.pool3d(x)
+        n,c,d,h,w = y.size()
+        y = y.view(n,d,h,w)
+        return y
+
 class Bottleneck(nn.Module):
     """
     RexNeXt bottleneck type C
     """
     expansion = 4
 
-    def __init__(self, inplanes, planes, baseWidth, cardinality, stride=1, downsample=None):
+    def __init__(self, inplanes, planes, baseWidth, cardinality, stride=1, downsample=None, use_channel_pool=False):
         """ Constructor
         Args:
             inplanes: input channel dimensionality
@@ -31,10 +46,17 @@ class Bottleneck(nn.Module):
         """
         super(Bottleneck, self).__init__()
 
+        self.use_channel_pool = use_channel_pool
         D = int(math.floor(planes * (baseWidth / 64)))
         C = cardinality
-
-        self.conv1 = nn.Conv2d(inplanes, D*C, kernel_size=1, stride=1, padding=0, bias=False)
+        
+        if self.use_channel_pool:  # stride=2, kernel=4, pad=1
+            pool_stride = inplanes / D*C
+            pool_kernel = pool_stride + 2
+            pool_padding = 1
+            self.cp = ChannelPool(pool_kernel, stride=pool_stride, padding=pool_padding, pool_type='Max') 
+        else:
+            self.conv1 = nn.Conv2d(inplanes, D*C, kernel_size=1, stride=1, padding=0, bias=False)、
         self.bn1 = nn.BatchNorm2d(D*C)
         self.conv2 = nn.Conv2d(D*C, D*C, kernel_size=3, stride=stride, padding=1, groups=C, bias=False)
         self.bn2 = nn.BatchNorm2d(D*C)
@@ -46,8 +68,11 @@ class Bottleneck(nn.Module):
 
     def forward(self, x):
         residual = x
-
-        out = self.conv1(x)
+        
+        if self.use_channel_pool:
+            out = self.cp(x)
+        else:
+            out = self.conv1(x)
         out = self.bn1(out)
         out = self.relu(out)
 
