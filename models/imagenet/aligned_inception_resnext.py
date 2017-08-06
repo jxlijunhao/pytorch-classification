@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from torch.nn import init
 import torch
 
-__all__ = ['aligned_inception_resnext50', 'aligned_inception_resnext101']
+__all__ = ['aligned_inception_resnext50', 'aligned_inception_resnext101', 'aligned_inception_resnext152']
 
 class Inception_Bottleneck(nn.Module):
     """
@@ -172,5 +172,12 @@ def aligned_inception_resnext101(baseWidth=4, cardinality=32):
     Construct Aligned_Inception_ResNeXt-101.
     """
     model = Aligned_Inception_ResNeXt(baseWidth, cardinality, [3, 4, 23, 3], 1000)
+    return model
+
+def aligned_inception_resnext152(baseWidth=4, cardinality=32):
+    """
+    Construct Aligned_Inception_ResNeXt-152.
+    """
+    model = Aligned_Inception_ResNeXt(baseWidth, cardinality, [3, 8, 36, 3], 1000)
     return model
 
