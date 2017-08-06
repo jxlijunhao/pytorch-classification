@@ -64,12 +64,14 @@ class SEBottleneck(nn.Module):
         out = self.bn3(out)
 
         se = self.global_avg(out)
+        se = se.view(se.size(0), -1)
         se = self.fc1(se)
         se = self.relu(se)
         se = self.fc2(se)
         se = self.sigmoid(se)
+        se = se.view(se.size(0), se.size(1), 1, 1)
 
-        out *= se.expand_as(out)
+        out = out * se.expand_as(out)
 
         if self.downsample is not None:
             residual = self.downsample(x)
@@ -143,7 +145,7 @@ class SE_ResNeXt(nn.Module):
         layers.append(block(self.inplanes, planes, self.baseWidth, self.cardinality, stride, downsample, ave_kernel=ak))
         self.inplanes = planes * block.expansion
         for i in range(1, blocks):
-            layers.append(block(self.inplanes, planes, self.baseWidth, self.cardinality))
+            layers.append(block(self.inplanes, planes, self.baseWidth, self.cardinality, ave_kernel=ak))
 
         return nn.Sequential(*layers)
 
