@@ -54,21 +54,21 @@ class SDSEBottleneck(nn.Module):
         residual = x
 
         if self.downsample is not None:
-            residual = self.downsample(x)
+            x = self.downsample(x)
 
         if not self.training or torch.rand(1)[0] >= self.death_rate:
-            out = self.conv1(x)
-            out = self.bn1(out)
-            out = self.relu(out)
+            residual = self.conv1(residual)
+            residual = self.bn1(residual)
+            residual = self.relu(residual)
 
-            out = self.conv2(out)
-            out = self.bn2(out)
-            out = self.relu(out)
+            residual = self.conv2(residual)
+            residual = self.bn2(residual)
+            residual = self.relu(residual)
 
-            out = self.conv3(out)
-            out = self.bn3(out)
+            residual = self.conv3(residual)
+            residual = self.bn3(residual)
 
-            se = self.global_avg(out)
+            se = self.global_avg(residual)
             se = se.view(se.size(0), -1)
             se = self.fc1(se)
             se = self.relu(se)
@@ -76,15 +76,15 @@ class SDSEBottleneck(nn.Module):
             se = self.sigmoid(se)
             se = se.view(se.size(0), se.size(1), 1, 1)
 
-            out = out * se.expand_as(out)
+            residual = residual * se.expand_as(residual)
 
             if self.training:
-                out /= (1. - self.death_rate)
+                residual /= (1. - self.death_rate)
 
-            residual += out
-            residual = self.relu(residual)
+            x = x + residual
+            x = self.relu(x)
 
-        return residual
+        return x
 
 
 class SDSE_ResNeXt(nn.Module):
