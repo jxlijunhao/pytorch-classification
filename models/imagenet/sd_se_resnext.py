@@ -20,7 +20,7 @@ class SDSEBottleneck(nn.Module):
     """
     expansion = 4
 
-    def __init__(self, inplanes, planes, baseWidth, cardinality, stride=1, death_rate=0., downsample=None, ave_kernel=56):
+    def __init__(self, inplanes, planes, baseWidth, cardinality, stride=1, downsample=None, death_rate=0., ave_kernel=56):
         """ Constructor
         Args:
             inplanes: input channel dimensionality
@@ -151,7 +151,7 @@ class SDSE_ResNeXt(nn.Module):
             )
 
         layers = []
-        layers.append(block(self.inplanes, planes, self.baseWidth, self.cardinality, stride, death_rate=death_rates[0], downsample, ave_kernel=ak))
+        layers.append(block(self.inplanes, planes, self.baseWidth, self.cardinality, stride, downsample, death_rate=death_rates[0], ave_kernel=ak))
         self.inplanes = planes * block.expansion
         for i in range(1, blocks):
             layers.append(block(self.inplanes, planes, self.baseWidth, self.cardinality, death_rate=death_rates[i], ave_kernel=ak))
