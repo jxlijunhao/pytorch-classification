@@ -111,7 +111,6 @@ class SE_AIRX(nn.Module):
         self.baseWidth = baseWidth
         self.num_classes = num_classes
         self.inplanes = 64
-        self.output_size = 64
 
         self.conv1 = nn.Conv2d(3, 64, 7, 2, 3, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
