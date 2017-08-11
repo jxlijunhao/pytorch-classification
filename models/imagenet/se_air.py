@@ -106,8 +106,7 @@ class SE_AIR(nn.Module):
 
         self.num_classes = num_classes
         self.inplanes = 64
-        self.output_size = 64
-
+        
         self.conv1 = nn.Conv2d(3, 64, 7, 2, 3, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU(inplace=True)
