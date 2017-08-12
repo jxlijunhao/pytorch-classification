@@ -12,7 +12,7 @@ import torch.nn.functional as F
 from torch.nn import init
 import torch
 
-__all__ = ['se_air26', 'se_air50', 'se_air101', 'se_air152']
+__all__ = ['se_air26_v2', 'se_air50_v2', 'se_air101_v2', 'se_air152_v2']
 
 class SEBottleneck(nn.Module):
     """
@@ -28,6 +28,8 @@ class SEBottleneck(nn.Module):
             stride: conv stride. Replaces pooling layer.
         """
         super(SEBottleneck, self).__init__()	
+        
+        self.bn = nn.BatchNorm2d(inplanes)
 
         self.conv1_1 = nn.Conv2d(inplanes, planes, kernel_size=1, stride=1, padding=0, bias=False)
         self.bn1_1 = nn.BatchNorm2d(planes)
@@ -41,9 +43,8 @@ class SEBottleneck(nn.Module):
 
         self.bn_concat = nn.BatchNorm2d(int(planes*1.5))
 
-        self.conv = nn.Conv2d(int(planes*1.5), planes*4, kernel_size=1, stride=1, padding=0, bias=False)
-        self.bn = nn.BatchNorm2d(planes*4)
-
+        self.conv3 = nn.Conv2d(int(planes*1.5), planes*4, kernel_size=1, stride=1, padding=0, bias=False)
+        
         self.global_avg = nn.AvgPool2d(ave_kernel)
         self.fc1 = nn.Linear(planes * 4, int(planes / 4))
         self.fc2 = nn.Linear(int(planes / 4), planes * 4)
@@ -55,6 +56,9 @@ class SEBottleneck(nn.Module):
     def forward(self, x):
         residual = x
 
+        x = self.bn(x)
+        x = self.relu(x)
+        
         branch1 = self.conv1_1(x)
         branch1 = self.bn1_1(branch1)
         branch1 = self.relu(branch1)
@@ -72,8 +76,7 @@ class SEBottleneck(nn.Module):
         out = self.bn_concat(out)
         out = self.relu(out)
   
-        out = self.conv(out)
-        out = self.bn(out)
+        out = self.conv3(out)
 
         se = self.global_avg(out)
         se = se.view(se.size(0), -1)
@@ -89,19 +92,18 @@ class SEBottleneck(nn.Module):
             residual = self.downsample(x)
 
         out += residual
-        out = self.relu(out)
 
         return out
 
 
-class SE_AIR(nn.Module):
+class SE_AIR_V2(nn.Module):
     def __init__(self, layers, num_classes):
         """ Constructor
         Args:
             layers: config of layers, e.g., [3, 4, 6, 3]
             num_classes: number of classes
         """
-        super(SE_AIR, self).__init__()
+        super(SE_AIR_V2, self).__init__()
         block = SEBottleneck
 
         self.num_classes = num_classes
@@ -115,6 +117,7 @@ class SE_AIR(nn.Module):
         self.layer2 = self._make_layer(block, 128, layers[1], 2, ak=28)
         self.layer3 = self._make_layer(block, 256, layers[2], 2, ak=14)
         self.layer4 = self._make_layer(block, 512, layers[3], 2, ak=7)
+        self.bn2 = nn.BatchNorm2d(512 * block.expansion)
         self.avgpool = nn.AvgPool2d(7)      
         self.fc = nn.Linear(512 * block.expansion, num_classes)
 
@@ -140,7 +143,6 @@ class SE_AIR(nn.Module):
             downsample = nn.Sequential(
                 nn.Conv2d(self.inplanes, planes * block.expansion,
                           kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(planes * block.expansion),
             )
 
         layers = []
@@ -160,39 +162,41 @@ class SE_AIR(nn.Module):
         x = self.layer2(x)
         x = self.layer3(x)
         x = self.layer4(x)
+        x = self.bn2(x)
+        x = self.relu(x)
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
         x = self.fc(x)
 
         return x
 
-def se_air26():
+def se_air26_v2():
     """
-    Construct SE-AIR-26.
+    Construct SE-AIR-26-V2.
     """
-    model = SE_AIR([2, 2, 2, 2], 1000)
+    model = SE_AIR_V2([2, 2, 2, 2], 1000)
     return model
 
 
-def se_air50():
+def se_air50_v2():
     """
-    Construct SE-AIR-50.
+    Construct SE-AIR-50-V2.
     """
-    model = SE_AIR([3, 4, 6, 3], 1000)
+    model = SE_AIR_V2([3, 4, 6, 3], 1000)
     return model
 
 
-def se_air101():
+def se_air101_v2():
     """
-    Construct SE-AIR-101, 200 layers.
+    Construct SE-AIR-101-V2, 200 layers.
     """
-    model = SE_AIR([3, 4, 23, 3], 1000)
+    model = SE_AIR_V2([3, 4, 23, 3], 1000)
     return model
 
-def se_air152():
+def se_air152_v2():
     """
-    Construct SE-AIR-152, 302 layers.
+    Construct SE-AIR-152-V2, 302 layers.
     """
-    model = SE_AIR([3, 8, 36, 3], 1000)
+    model = SE_AIR_V2([3, 8, 36, 3], 1000)
     return model
 
