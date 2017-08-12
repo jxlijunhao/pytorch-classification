@@ -16,7 +16,7 @@ __all__ = ['se_air26', 'se_air50', 'se_air101', 'se_air152']
 
 class SEBottleneck(nn.Module):
     """
-    Inception_Bottleneck bottleneck
+    SEBottleneck bottleneck
     """
     expansion = 4
 
@@ -173,14 +173,12 @@ def se_air26():
     model = SE_AIR([2, 2, 2, 2], 1000)
     return model
 
-
 def se_air50():
     """
     Construct SE-AIR-50.
     """
     model = SE_AIR([3, 4, 6, 3], 1000)
     return model
-
 
 def se_air101():
     """
@@ -195,5 +193,3 @@ def se_air152():
     """
     model = SE_AIR([3, 8, 36, 3], 1000)
     return model
-
-
