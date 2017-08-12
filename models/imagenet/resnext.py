@@ -112,7 +112,6 @@ class ResNeXt(nn.Module):
         self.baseWidth = baseWidth
         self.num_classes = num_classes
         self.inplanes = 64
-        self.output_size = 64
 
         self.conv1 = nn.Conv2d(3, 64, 7, 2, 3, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
@@ -181,7 +180,6 @@ def resnext26(baseWidth=4, cardinality=32):
     model = ResNeXt(baseWidth, cardinality, [2, 2, 2, 2], 1000)
     return model
 
-
 def resnext50(baseWidth, cardinality):
     """
     Construct ResNeXt-50.
@@ -189,14 +187,12 @@ def resnext50(baseWidth, cardinality):
     model = ResNeXt(baseWidth, cardinality, [3, 4, 6, 3], 1000)
     return model
 
-
 def resnext101(baseWidth, cardinality):
     """
     Construct ResNeXt-101.
     """
     model = ResNeXt(cardinality, baseWidth, [3, 4, 23, 3], 1000)
     return model
-
 
 def resnext152(baseWidth, cardinality):
     """
