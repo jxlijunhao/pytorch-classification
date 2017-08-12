@@ -25,7 +25,7 @@ class AIRXBottleneck(nn.Module):
             cardinality: num of convolution groups.
             stride: conv stride. Replaces pooling layer.
         """
-        super(Inception_Bottleneck, self).__init__()
+        super(AIRXBottleneck, self).__init__()
 
         D = int(math.floor(planes * (baseWidth / 128)))	# when placne=64, C=32, baseWidth=4, then D=2
         C = cardinality
@@ -165,7 +165,6 @@ def airx50(baseWidth=4, cardinality=32):
     """
     model = AIRX(baseWidth, cardinality, [3, 4, 6, 3], 1000)
     return model
-
 
 def airx101(baseWidth=4, cardinality=32):
     """
