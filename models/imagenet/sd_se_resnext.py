@@ -112,7 +112,6 @@ class SDSE_ResNeXt(nn.Module):
         self.baseWidth = baseWidth
         self.num_classes = num_classes
         self.inplanes = 64
-        self.output_size = 64
 
         self.conv1 = nn.Conv2d(3, 64, 7, 2, 3, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
@@ -195,7 +194,6 @@ def sdse_resnext26(baseWidth=4, cardinality=32):
     model = SDSE_ResNeXt(baseWidth, cardinality, [2, 2, 2, 2], 1000, death_rates)
     return model
 
-
 def sdse_resnext50(baseWidth=4, cardinality=32):
     """
     Construct SDSE-ResNeXt-50.
@@ -205,7 +203,6 @@ def sdse_resnext50(baseWidth=4, cardinality=32):
     model = SDSE_ResNeXt(baseWidth, cardinality, [3, 4, 6, 3], 1000, death_rates)
     return model
 
-
 def sdse_resnext101(baseWidth=4, cardinality=32):
     """
     Construct SDSE-ResNeXt-101.
@@ -214,7 +211,6 @@ def sdse_resnext101(baseWidth=4, cardinality=32):
     print death_rates
     model = SDSE_ResNeXt(cardinality, baseWidth, [3, 4, 23, 3], 1000, death_rates)
     return model
-
 
 def sdse_resnext152(baseWidth=4, cardinality=32):
     """
