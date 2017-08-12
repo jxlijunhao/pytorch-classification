@@ -12,7 +12,7 @@ __all__ = ['se_airx26', 'se_airx50', 'se_airx101', 'se_airx152']
 
 class SEBottleneck(nn.Module):
     """
-    Inception_Bottleneck bottleneck type C
+    SEBottleneck bottleneck type C
     """
     expansion = 4
 
@@ -179,14 +179,12 @@ def se_airx26(baseWidth=4, cardinality=32):
     model = SE_AIRX(baseWidth, cardinality, [2, 2, 2, 2], 1000)
     return model
 
-
 def se_airx50(baseWidth=4, cardinality=32):
     """
     Construct SE-AIRX-50.
     """
     model = SE_AIRX(baseWidth, cardinality, [3, 4, 6, 3], 1000)
     return model
-
 
 def se_airx101(baseWidth=4, cardinality=32):
     """
@@ -201,5 +199,3 @@ def se_airx152(baseWidth=4, cardinality=32):
     """
     model = SE_AIRX(baseWidth, cardinality, [3, 8, 36, 3], 1000)
     return model
-
-
