@@ -12,7 +12,7 @@ import torch.nn.functional as F
 from torch.nn import init
 import torch
 
-__all__ = ['air50', 'air101']
+__all__ = ['air50', 'air101', 'air152']
 
 class AIRBottleneck(nn.Module):
     """
@@ -91,7 +91,6 @@ class AIR(nn.Module):
 
         self.num_classes = num_classes
         self.inplanes = 64
-        self.output_size = 64
 
         self.conv1 = nn.Conv2d(3, 64, 7, 2, 3, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
@@ -160,10 +159,16 @@ def air50():
     model = AIR([3, 4, 6, 3], 1000)
     return model
 
-
 def air101():
     """
     Construct AIR-101.
     """
     model = AIR([3, 4, 23, 3], 1000)
+    return model
+
+def air152():
+    """
+    Construct AIR-152.
+    """
+    model = AIR([3, 8, 36, 3], 1000)
     return model
