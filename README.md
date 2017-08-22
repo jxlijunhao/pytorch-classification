@@ -44,12 +44,13 @@ Single-crop (224x224) validation error rate is reported.
 | ResNet18 (bupt-priv)        | 11.69              |  29.11             | 10.07              |
 | ResNeXt26-32x4d (bupt-priv) | 15.39              |  24.93             | 7.75               |
 | Se-ResNeXt50-32x4d (bupt-priv) | --              |  21.91             | --               |
-| Aligned-Inception-ResNet101<br/> (bupt-priv) | 64.38           |  20.74             | 5.56               |
-| Aligned-Inception-ResNeXt50-24x4d<br/> (bupt-priv) | 28.09           |  21.88                | 5.95                 |
-| Aligned-Inception-ResNeXt101-32x4d<br/> (bupt-priv) | 64.17           |  20.63                | --                 |
-| Aligned-Inception-ResNeXt152-32x4d<br/> (bupt-priv) | 89.34           |  20.28                | --                 |
+| AIR101<br/> (bupt-priv) | 64.38           |  20.74             | 5.56               |
+| AIRX50-24x4d<br/> (bupt-priv) | 28.09           |  21.88                | 5.95                 |
+| AIRX101-32x4d<br/> (bupt-priv) | 64.17           |  20.63                | --                 |
+| AIRXt152-32x4d<br/> (bupt-priv) | 89.34           |  20.28                | --                 |
 
 - All the bupt-priv models are trained for 130/140 epochs, the lr schedule is 61 91 121.
+- AIR/AIRX is short for Aligned-Inception-ResNe(X)t.
 
 <div align='center'>
   <img src='utils/images/resnet18-log.png' height='330px'>
@@ -81,7 +82,7 @@ Since the size of images in CIFAR dataset is `32x32`, popular network structures
 ### ImageNet
 - [x] All models in `torchvision.models` (alexnet, vgg, resnet, densenet, inception_v3, squeezenet)
 - [x] [ResNeXt](https://arxiv.org/abs/1611.05431)
-- [x] [Aligned Inception Resnet/ResNeXt](https://arxiv.org/pdf/1703.06211.pdf)
+- [x] [AIR/AIRX](https://arxiv.org/pdf/1703.06211.pdf)
 
 
 ## Contribute
