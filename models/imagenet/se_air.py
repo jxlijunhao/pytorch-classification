@@ -45,8 +45,10 @@ class SEBottleneck(nn.Module):
         self.bn = nn.BatchNorm2d(planes*4)
 
         self.global_avg = nn.AvgPool2d(ave_kernel)
-        self.fc1 = nn.Linear(planes * 4, int(planes / 4))
-        self.fc2 = nn.Linear(int(planes / 4), planes * 4)
+        self.down = nn.Conv2d(planes * 4, int(planes / 4), kernel_size=1, stride=1, padding=0, bias=True)
+        self.up = nn.Conv2d(int(planes / 4), planes * 4, kernel_size=1, stride=1, padding=0, bias=True)
+        # self.fc1 = nn.Linear(planes * 4, int(planes / 4))
+        # self.fc2 = nn.Linear(int(planes / 4), planes * 4)
         
         self.sigmoid = nn.Sigmoid()
         self.relu = nn.ReLU(inplace=True)
@@ -76,12 +78,12 @@ class SEBottleneck(nn.Module):
         out = self.bn(out)
 
         se = self.global_avg(out)
-        se = se.view(se.size(0), -1)
-        se = self.fc1(se)
+        # se = se.view(se.size(0), -1)
+        se = self.down(se)
         se = self.relu(se)
-        se = self.fc2(se)
+        se = self.up(se)
         se = self.sigmoid(se)
-        se = se.view(se.size(0), se.size(1), 1, 1)
+        # se = se.view(se.size(0), se.size(1), 1, 1)
 
         out = out * se.expand_as(out)
 
@@ -105,11 +107,20 @@ class SE_AIR(nn.Module):
         block = SEBottleneck
 
         self.num_classes = num_classes
-        self.inplanes = 64
+        self.inplanes = 128
         
-        self.conv1 = nn.Conv2d(3, 64, 7, 2, 3, bias=False)
+        # self.conv1 = nn.Conv2d(3, 64, 7, 2, 3, bias=False)
+        # self.bn1 = nn.BatchNorm2d(64)
+        # self.relu = nn.ReLU(inplace=True)
+        
+        self.conv1 = nn.Conv2d(3, 64, 3, 2, 1, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
+        self.conv2 = nn.Conv2d(64, 64, 3, 1, 1, bias=False)
+        self.bn2 = nn.BatchNorm2d(64)
+        self.conv3 = nn.Conv2d(64, 128, 3, 1, 1, bias=False)
+        self.bn3 = nn.BatchNorm2d(128)
         self.relu = nn.ReLU(inplace=True)
+        
         self.maxpool1 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         self.layer1 = self._make_layer(block, 64, layers[0], ak=56)
         self.layer2 = self._make_layer(block, 128, layers[1], 2, ak=28)
@@ -155,12 +166,19 @@ class SE_AIR(nn.Module):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
+        x = self.conv2(x)
+        x = self.bn2(x)
+        x = self.relu(x)
+        x = self.conv3(x)
+        x = self.bn3(x)
+        x = self.relu(x)
         x = self.maxpool1(x)
         x = self.layer1(x)
         x = self.layer2(x)
         x = self.layer3(x)
         x = self.layer4(x)
         x = self.avgpool(x)
+        x = F.dropout(x, p=0.2, training=self.training)
         x = x.view(x.size(0), -1)
         x = self.fc(x)
 
