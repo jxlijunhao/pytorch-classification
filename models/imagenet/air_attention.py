@@ -39,9 +39,9 @@ class AttentionBlock_A(nn.Module):
         self.up4_block1 = AIRBottleneck(inplanes, planes)
         
         self.mask_conv1 = nn.Conv2d(inplanes, inplanes, kernel_size=1, stride=1, padding=0, bias=False)
-        self.maks_bn1 = nn.BatchNorm2d(inplanes)
+        self.mask_bn1 = nn.BatchNorm2d(inplanes)
         self.mask_conv2 = nn.Conv2d(inplanes, inplanes, kernel_size=1, stride=1, padding=0, bias=False)
-        self.maks_bn2 = nn.BatchNorm2d(inplanes)
+        self.mask_bn2 = nn.BatchNorm2d(inplanes)
         self.relu = nn.ReLU(inplace=True)
         self.sigmoid = nn.Sigmoid()
 
@@ -115,9 +115,9 @@ class AttentionBlock_B(nn.Module):
         self.up2_block1 = AIRBottleneck(inplanes, planes)
         
         self.mask_conv1 = nn.Conv2d(inplanes, inplanes, kernel_size=1, stride=1, padding=0, bias=False)
-        self.maks_bn1 = nn.BatchNorm2d(inplanes)
+        self.mask_bn1 = nn.BatchNorm2d(inplanes)
         self.mask_conv2 = nn.Conv2d(inplanes, inplanes, kernel_size=1, stride=1, padding=0, bias=False)
-        self.maks_bn2 = nn.BatchNorm2d(inplanes)
+        self.mask_bn2 = nn.BatchNorm2d(inplanes)
         self.relu = nn.ReLU(inplace=True)
         self.sigmoid = nn.Sigmoid()
 
@@ -179,9 +179,9 @@ class AttentionBlock_C(nn.Module):
         self.down2_block2 = AIRBottleneck(inplanes, planes)
         
         self.mask_conv1 = nn.Conv2d(inplanes, inplanes, kernel_size=1, stride=1, padding=0, bias=False)
-        self.maks_bn1 = nn.BatchNorm2d(inplanes)
+        self.mask_bn1 = nn.BatchNorm2d(inplanes)
         self.mask_conv2 = nn.Conv2d(inplanes, inplanes, kernel_size=1, stride=1, padding=0, bias=False)
-        self.maks_bn2 = nn.BatchNorm2d(inplanes)
+        self.mask_bn2 = nn.BatchNorm2d(inplanes)
         self.relu = nn.ReLU(inplace=True)
         self.sigmoid = nn.Sigmoid()
 
