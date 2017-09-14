@@ -64,15 +64,15 @@ class AttentionBlock_A(nn.Module):
         d8 = self.down8_block1(d8)
         d82 = self.down8_block2(d8)
         
-        up2 = d42 + F.upsample(d82, scale_factor=2)
+        up2 = d42 + F.upsample_bilinear(d82, d42.size()[2:])
         up2 = self.relu(up2)
         up2 = self.up2_block1(up2)
         
-        up4 = d22 + F.upsample(up2, scale_factor=2)
+        up4 = d22 + F.upsample_bilinear(up2, d22.size()[2:])
         up4 = self.relu(up4)
         up4 = self.up4_block1(up4)
         
-        up8 = F.upsample(up4, scale_factor=2)
+        up8 = F.upsample_bilinear(up4, x.size()[2:])
         up8 = self.mask_conv1(up8)
         up8 = self.mask_bn1(up8)
         up8 = self.relu(up8)
@@ -136,11 +136,11 @@ class AttentionBlock_B(nn.Module):
         d4 = self.down4_block1(d4)
         d42 = self.down4_block2(d4)           
         
-        up2 = d22 + F.upsample(d42, scale_factor=2)
+        up2 = d22 + F.upsample_bilinear(d42, d22.size()[2:])
         up2 = self.relu(up2)
         up2 = self.up2_block1(up2)
         
-        up4 = F.upsample(up2, scale_factor=2)
+        up4 = F.upsample_bilinear(up2, x.size()[2:])
         up4 = self.mask_conv1(up4)
         up4 = self.mask_bn1(up4)
         up4 = self.relu(up4)
@@ -196,7 +196,7 @@ class AttentionBlock_C(nn.Module):
         d2 = self.down2_block1(d2)
         d22 = self.down2_block2(d2)             
         
-        up2 = F.upsample(d22, scale_factor=2)
+        up2 = F.upsample_bilinear(d22, x.size()[2:])
         up2 = self.mask_conv1(up2)
         up2 = self.mask_bn1(up2)
         up2 = self.relu(up2)
