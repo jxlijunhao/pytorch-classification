@@ -27,16 +27,16 @@ class AttentionBlock_A(nn.Module):
         
         self.downsample = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         
-        pre_block = AIRBottleneck(inplanes, planes)
-        down2_block1 = AIRBottleneck(inplanes, planes)
-        down2_block2 = AIRBottleneck(inplanes, planes)
-        down4_block1 = AIRBottleneck(inplanes, planes)
-        down4_block2 = AIRBottleneck(inplanes, planes) 
-        down8_block1 = AIRBottleneck(inplanes, planes)
-        down8_block2 = AIRBottleneck(inplanes, planes)        
+        self.pre_block = AIRBottleneck(inplanes, planes)
+        self.down2_block1 = AIRBottleneck(inplanes, planes)
+        self.down2_block2 = AIRBottleneck(inplanes, planes)
+        self.down4_block1 = AIRBottleneck(inplanes, planes)
+        self.down4_block2 = AIRBottleneck(inplanes, planes) 
+        self.down8_block1 = AIRBottleneck(inplanes, planes)
+        self.down8_block2 = AIRBottleneck(inplanes, planes)        
        
-        up2_block1 = AIRBottleneck(inplanes, planes)
-        up4_block1 = AIRBottleneck(inplanes, planes)
+        self.up2_block1 = AIRBottleneck(inplanes, planes)
+        self.up4_block1 = AIRBottleneck(inplanes, planes)
         
         self.mask_conv1 = nn.Conv2d(inplanes, inplanes, kernel_size=1, stride=1, padding=0, bias=False)
         self.maks_bn1 = nn.BatchNorm2d(inplanes)
@@ -45,9 +45,9 @@ class AttentionBlock_A(nn.Module):
         self.relu = nn.ReLU(inplace=True)
         self.sigmoid = nn.Sigmoid()
 
-        block1 = AIRBottleneck(inplanes, planes)
-        block2 = AIRBottleneck(inplanes, planes)    
-        pos_block = AIRBottleneck(inplanes, planes)
+        self.block1 = AIRBottleneck(inplanes, planes)
+        self.block2 = AIRBottleneck(inplanes, planes)    
+        self.pos_block = AIRBottleneck(inplanes, planes)
            
     def forward(self, x):
         x = self.pre_block(x)
@@ -106,13 +106,13 @@ class AttentionBlock_B(nn.Module):
         
         self.downsample = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         
-        pre_block = AIRBottleneck(inplanes, planes)
-        down2_block1 = AIRBottleneck(inplanes, planes)
-        down2_block2 = AIRBottleneck(inplanes, planes)
-        down4_block1 = AIRBottleneck(inplanes, planes)
-        down4_block2 = AIRBottleneck(inplanes, planes)      
+        self.pre_block = AIRBottleneck(inplanes, planes)
+        self.down2_block1 = AIRBottleneck(inplanes, planes)
+        self.down2_block2 = AIRBottleneck(inplanes, planes)
+        self.down4_block1 = AIRBottleneck(inplanes, planes)
+        self.down4_block2 = AIRBottleneck(inplanes, planes)      
        
-        up2_block1 = AIRBottleneck(inplanes, planes)
+        self.up2_block1 = AIRBottleneck(inplanes, planes)
         
         self.mask_conv1 = nn.Conv2d(inplanes, inplanes, kernel_size=1, stride=1, padding=0, bias=False)
         self.maks_bn1 = nn.BatchNorm2d(inplanes)
@@ -121,9 +121,9 @@ class AttentionBlock_B(nn.Module):
         self.relu = nn.ReLU(inplace=True)
         self.sigmoid = nn.Sigmoid()
 
-        block1 = AIRBottleneck(inplanes, planes)
-        block2 = AIRBottleneck(inplanes, planes)    
-        pos_block = AIRBottleneck(inplanes, planes)
+        self.block1 = AIRBottleneck(inplanes, planes)
+        self.block2 = AIRBottleneck(inplanes, planes)    
+        self.pos_block = AIRBottleneck(inplanes, planes)
            
     def forward(self, x):
         x = self.pre_block(x)
@@ -174,9 +174,9 @@ class AttentionBlock_C(nn.Module):
         
         self.downsample = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         
-        pre_block = AIRBottleneck(inplanes, planes)
-        down2_block1 = AIRBottleneck(inplanes, planes)
-        down2_block2 = AIRBottleneck(inplanes, planes)
+        self.pre_block = AIRBottleneck(inplanes, planes)
+        self.down2_block1 = AIRBottleneck(inplanes, planes)
+        self.down2_block2 = AIRBottleneck(inplanes, planes)
         
         self.mask_conv1 = nn.Conv2d(inplanes, inplanes, kernel_size=1, stride=1, padding=0, bias=False)
         self.maks_bn1 = nn.BatchNorm2d(inplanes)
@@ -185,9 +185,9 @@ class AttentionBlock_C(nn.Module):
         self.relu = nn.ReLU(inplace=True)
         self.sigmoid = nn.Sigmoid()
 
-        block1 = AIRBottleneck(inplanes, planes)
-        block2 = AIRBottleneck(inplanes, planes)    
-        pos_block = AIRBottleneck(inplanes, planes)
+        self.block1 = AIRBottleneck(inplanes, planes)
+        self.block2 = AIRBottleneck(inplanes, planes)    
+        self.pos_block = AIRBottleneck(inplanes, planes)
            
     def forward(self, x):
         x = self.pre_block(x)
