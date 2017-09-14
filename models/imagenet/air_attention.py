@@ -1,9 +1,5 @@
 from __future__ import division
 """ 
-Ported form 
-https://github.com/facebook/fb.resnet.torch
-and
-https://arxiv.org/pdf/1703.06211.pdf
 (c) Yang Lu
 """
 import math
@@ -12,7 +8,7 @@ import torch.nn.functional as F
 from torch.nn import init
 import torch
 
-__all__ = ['air50', 'air101', 'air152']
+__all__ = ['air_attention']
 
 
 class AttentionBlock_A(nn.Module):
@@ -282,14 +278,15 @@ class AIRBottleneck(nn.Module):
         return out
 
 
-class AIR(nn.Module):
-    def __init__(self, layers, num_classes):
+class AIR_Attention(nn.Module):
+    def __init__(self, num_classes):
         """ Constructor
         Args:
-            layers: config of layers, e.g., [3, 4, 6, 3]
+            layers: config of layers, e.g., [1, 1, 1, 3] for aira56, [1, 2, 3, 3] for aira92, 
+                                            [1, 2, 5, 3] for aira116, [1, 2, 7, 3] for aira140
             num_classes: number of classes
         """
-        super(AIR, self).__init__()
+        super(AIR_Attention, self).__init__()
         block = AIRBottleneck
 
         self.num_classes = num_classes
@@ -299,10 +296,18 @@ class AIR(nn.Module):
         self.bn1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool1 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
-        self.layer1 = self._make_layer(block, 64, layers[0])
-        self.layer2 = self._make_layer(block, 128, layers[1], 2)
-        self.layer3 = self._make_layer(block, 256, layers[2], 2)
-        self.layer4 = self._make_layer(block, 512, layers[3], 2)
+        
+        self.layer1 = self._make_layer(block, 64, 1)
+        self.att_A1 = AttentionBlock_A(64 * block.expansion, 64)
+        self.layer2 = self._make_layer(block, 128, 1, 2)
+        self.att_B1 = AttentionBlock_B(128 * block.expansion, 128)
+        self.att_B2 = AttentionBlock_B(128 * block.expansion, 128)
+        self.layer3 = self._make_layer(block, 256, 1, 2)
+        self.att_C1 = AttentionBlock_C(256 * block.expansion, 256)
+        self.att_C2 = AttentionBlock_C(256 * block.expansion, 256)
+        self.att_C3 = AttentionBlock_C(256 * block.expansion, 256)
+        self.layer4 = self._make_layer(block, 512, 3, 2)
+        
         self.avgpool = nn.AvgPool2d(7)      
         self.fc = nn.Linear(512 * block.expansion, num_classes)
 
@@ -345,8 +350,14 @@ class AIR(nn.Module):
         x = self.relu(x)
         x = self.maxpool1(x)
         x = self.layer1(x)
+        x = self.att_A1(x)
         x = self.layer2(x)
+        x = self.att_B1(x)
+        x = self.att_B2(x)
         x = self.layer3(x)
+        x = self.att_C1(x)
+        x = self.att_C2(x)
+        x = self.att_C3(x)
         x = self.layer4(x)
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
@@ -355,23 +366,9 @@ class AIR(nn.Module):
         return x
 
 
-def air50():
+def air_attention():
     """
-    Construct AIR-50.
+    Construct AIR_Attention92.
     """
-    model = AIR([3, 4, 6, 3], 1000)
-    return model
-
-def air101():
-    """
-    Construct AIR-101.
-    """
-    model = AIR([3, 4, 23, 3], 1000)
-    return model
-
-def air152():
-    """
-    Construct AIR-152.
-    """
-    model = AIR([3, 8, 36, 3], 1000)
+    model = AIR_Attention(1000)
     return model
