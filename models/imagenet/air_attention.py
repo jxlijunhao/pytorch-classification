@@ -78,13 +78,13 @@ class AttentionBlock_A(nn.Module):
         up8 = self.relu(up8)
         up8 = self.mask_conv2(up8)
         up8 = self.mask_bn2(up8)
-        mask = self.sigmoid(up8)   
+        up8 = self.sigmoid(up8)   
         
         x = self.block1(x)
         x = self.block2(x)
-        attention = x * mask
-        x += attention
-        x = self.relu(x)
+        attention = x * up8
+        out = x + attention
+        out = self.relu(out)
         out = self.pos_block(x)
         
         return out
@@ -146,13 +146,13 @@ class AttentionBlock_B(nn.Module):
         up4 = self.relu(up4)
         up4 = self.mask_conv2(up4)
         up4 = self.mask_bn2(up4)
-        mask = self.sigmoid(up4)   
+        up4 = self.sigmoid(up4)   
         
         x = self.block1(x)
         x = self.block2(x)
-        attention = x * mask
-        x += attention
-        x = self.relu(x)
+        attention = x * up4
+        out = x + attention
+        out = self.relu(out)
         out = self.pos_block(x)
         
         return out
@@ -202,13 +202,13 @@ class AttentionBlock_C(nn.Module):
         up2 = self.relu(up2)
         up2 = self.mask_conv2(up2)
         up2 = self.mask_bn2(up2)
-        mask = self.sigmoid(up2)   
+        up2 = self.sigmoid(up2)   
         
         x = self.block1(x)
         x = self.block2(x)
-        attention = x * mask
-        x += attention
-        x = self.relu(x)
+        attention = x * up2
+        out = x + attention
+        out = self.relu(out)
         out = self.pos_block(x)
         
         return out
