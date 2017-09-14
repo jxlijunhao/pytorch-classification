@@ -19,7 +19,6 @@ class AttentionBlock_A(nn.Module):
     """
     AttentionBlock_A bottleneck
     """
-    expansion = 4
 
     def __init__(self, inplanes, planes, stride=1, downsample=None):
         """ Constructor
@@ -95,12 +94,10 @@ class AttentionBlock_A(nn.Module):
         return out
         
         
-
 class AttentionBlock_B(nn.Module):
     """
     AttentionBlock_B bottleneck
     """
-    expansion = 4
 
     def __init__(self, inplanes, planes, stride=1, downsample=None):
         """ Constructor
@@ -163,7 +160,62 @@ class AttentionBlock_B(nn.Module):
         out = self.pos_block(x)
         
         return out
+
     
+class AttentionBlock_C(nn.Module):
+    """
+    AttentionBlock_C bottleneck
+    """
+
+    def __init__(self, inplanes, planes, stride=1, downsample=None):
+        """ Constructor
+        Args:
+            inplanes: input channel dimensionality
+            planes: output channel dimensionality
+            stride: conv stride. Replaces pooling layer.
+        """
+        super(AttentionBlock_C, self).__init__()
+        
+        self.downsample = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+        
+        pre_block = AIRBottleneck(inplanes, planes)
+        down2_block1 = AIRBottleneck(inplanes, planes)
+        down2_block2 = AIRBottleneck(inplanes, planes)
+        
+        self.mask_conv1 = nn.Conv2d(inplanes, inplanes, kernel_size=1, stride=1, padding=0, bias=False)
+        self.maks_bn1 = nn.BatchNorm2d(inplanes)
+        self.mask_conv2 = nn.Conv2d(inplanes, inplanes, kernel_size=1, stride=1, padding=0, bias=False)
+        self.maks_bn2 = nn.BatchNorm2d(inplanes)
+        self.relu = nn.ReLU(inplace=True)
+        self.sigmoid = nn.Sigmoid()
+
+        block1 = AIRBottleneck(inplanes, planes)
+        block2 = AIRBottleneck(inplanes, planes)    
+        pos_block = AIRBottleneck(inplanes, planes)
+           
+    def forward(self, x):
+        x = self.pre_block(x)
+        
+        d2 = self.downsample(x)
+        d2 = self.down2_block1(d2)
+        d22 = self.down2_block2(d2)             
+        
+        up2 = F.upsample(d22, scale_factor=2)
+        up2 = self.mask_conv1(up2)
+        up2 = self.mask_bn1(up2)
+        up2 = self.relu(up2)
+        up2 = self.mask_conv2(up2)
+        up2 = self.mask_bn2(up2)
+        mask = self.sigmoid(up2)   
+        
+        x = self.block1(x)
+        x = self.block2(x)
+        attention = x * mask
+        x += attention
+        x = self.relu(x)
+        out = self.pos_block(x)
+        
+        return out
 
 class AIRBottleneck(nn.Module):
     """
