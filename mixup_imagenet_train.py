@@ -243,7 +243,7 @@ def main():
 
         print('\nEpoch: [%d | %d] LR: %f' % (epoch + 1, args.epochs, state['lr']))
 
-        train_loss, train_acc = train(train_loader, model, criterion, optimizer, epoch, use_cuda)
+        train_loss, train_acc = train((train_loader1, train_loader2), model, optimizer, epoch, use_cuda, mix_rate=args.mix, num_classes=1000)
         test_loss, test_acc = test(val_loader, model, criterion, epoch, use_cuda)
 
         # append logger file
@@ -267,7 +267,7 @@ def main():
     print('Best acc:')
     print(best_acc)
 
-def train(train_loader, model, criterion, optimizer, epoch, use_cuda):
+def train(train_loaders, model, optimizer, epoch, use_cuda, mix_rate=0.4, num_classes=1000):
     # switch to train mode
     model.train()
 
@@ -278,10 +278,18 @@ def train(train_loader, model, criterion, optimizer, epoch, use_cuda):
     top5 = AverageMeter()
     end = time.time()
 
-    bar = Bar('Processing', max=len(train_loader))
-    for batch_idx, (inputs, targets) in enumerate(train_loader):
+    bar = Bar('Processing', max=len(train_loaders[0]))
+    # for batch_idx, (inputs, targets) in enumerate(train_loader):
+    for batch_idx, (inputs1, targets1), (inputs2, targets2) in enumerate(zip(*train_loaders)):
         # measure data loading time
         data_time.update(time.time() - end)
+        
+        targets1 = onehot(targets1, num_classes)
+        targets2 = onehot(targets2, num_classes)
+        
+        _lambda = np.random.beta(mix_rate, mix_rate)
+        inputs = _lambda * inputs1 + (1 - _lambda) * inputs2
+        targets = _lambda * targets1 + (1 - _lambda) * targets2
 
         if use_cuda:
             inputs, targets = inputs.cuda(), targets.cuda(async=True)
@@ -289,7 +297,8 @@ def train(train_loader, model, criterion, optimizer, epoch, use_cuda):
 
         # compute output
         outputs = model(inputs)
-        loss = criterion(outputs, targets)
+        loss = naive_cross_entropy_loss(outputs, target)
+        # loss = criterion(outputs, targets)
 
         # measure accuracy and record loss
         prec1, prec5 = accuracy(outputs.data, targets.data, topk=(1, 5))
