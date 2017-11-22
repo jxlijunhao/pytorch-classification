@@ -52,6 +52,8 @@ parser.add_argument('-d', '--data', default='path to dataset', type=str)
 parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
 # Optimization options
+parser.add_argument('--mix', '--mixup_rate', default=0.4, type=float,
+                    metavar='Mixup Rate', help='Mixup Rate')
 parser.add_argument('--epochs', default=90, type=int, metavar='N',
                     help='number of total epochs to run')
 parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
@@ -148,7 +150,19 @@ def main():
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
 
-    train_loader = torch.utils.data.DataLoader(
+    train_loader1 = torch.utils.data.DataLoader(
+        datasets.ImageFolder(traindir, transforms.Compose([
+            transforms.RandomSizedCrop(224),
+            transforms.RandomHorizontalFlip(),
+            RandomJitter([-20, 20]),
+            RandomRotate([-10, 10]),
+            transforms.ToTensor(),
+            normalize,
+        ])),
+        batch_size=args.train_batch, shuffle=True,
+        num_workers=args.workers, pin_memory=True)
+    
+    train_loader2 = torch.utils.data.DataLoader(
         datasets.ImageFolder(traindir, transforms.Compose([
             transforms.RandomSizedCrop(224),
             transforms.RandomHorizontalFlip(),
@@ -381,6 +395,35 @@ def adjust_cosine_lr(optimizer, epoch):
     state['lr'] = 0.5 * args.lr * (np.cos(epoch * np.pi / args.epochs) + 1.0)
     for param_group in optimizer.param_groups:
         param_group['lr'] = state['lr']
+        
+def variable(t):
+    if cuda_available:
+        t = t.cuda()
+    return Variable(t)
+
+def onehot(t, num_classes):
+    """
+    convert index tensor into onehot tensor
+    :param t: index tensor
+    :param num_classes: number of classes
+    """
+    assert isinstance(t, torch.LongTensor)
+    return torch.zeros(t.size()[0], num_classes).scatter_(1, t.view(-1, 1), 1)
+
+
+def naive_cross_entropy_loss(input, target, size_average=True):
+    """
+    in PyTorch's cross entropy, targets are expected to be labels
+    so to predict probabilities this loss is needed
+    suppose q is the target and p is the input
+    loss(p, q) = -\sum_i q_i \log p_i
+    """
+    assert input.size() == target.size()
+    assert isinstance(input, Variable) and isinstance(target, Variable)
+    input = torch.log(F.softmax(input, dim=1).clamp(1e-5, 1))
+    # input = input - torch.log(torch.sum(torch.exp(input), dim=1)).view(-1, 1)
+    loss = - torch.sum(input * target)
+    return loss / input.size()[0] if size_average else loss
 
 if __name__ == '__main__':
     main()
