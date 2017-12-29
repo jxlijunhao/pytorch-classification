@@ -18,6 +18,8 @@ The bupt-priv pytorch-classification is modified version of [pytorch-classificat
 
 
 ## Install
+* Requirement
+  pytorch 0.3.0
 * Install [PyTorch](http://pytorch.org/)
 * Clone recursively
   ```
